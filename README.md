@@ -34,7 +34,7 @@ type Person struct {
 }
 
 func main() {
-	// Usually, you get values from a `*http.Request`.
+	// Usually, you get values from an `*http.Request`.
 	v := url.Values{}
 	for key, val := range map[string]string{
 		"first_name": "Batty",
