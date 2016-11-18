@@ -50,6 +50,32 @@ type Setter func(value []string) error
 // FieldUnmarshaler unmarshals a specific field.
 type FieldUnmarshaler func(field string, value []string) (interface{}, error)
 
+// Unmarshal unmarshals values into the given interface{}.
+//
+// This walks the values and copies each value into the matching field on the
+// interface. It is recommended that o be a pointer to a struct.
+//
+// Structs may be annotated with tags:
+//
+//	type Person struct {
+//		First string `form:"first_name"`
+//		Last string `form:"last_name"`
+//	}
+//
+// Additionally, if a field has a matching Validator or Setter, that function
+// will also be called. Validators and Setters are matched based on name.
+// For example, given the First field above, the validators and setters would
+// be:
+//
+//	func(p *Person) FormValidateFirst(v []string) *form.ValidationError {}
+//	func(p *Person) FormSetFirst(v []string) error {}
+//
+// A Validator should not alter v or store any part of v.
+//
+// A Setter may set the field. If it does not, the field will remain unset.
+//
+// If a Validator fails, the field will not be set, but processing will continue.
+// If a Setter fails, the field will not be set, and unmarshaling will be halter.
 func Unmarshal(v url.Values, o interface{}) error {
 	val := reflect.ValueOf(o)
 	if val.Kind() != reflect.Ptr || val.IsNil() {
