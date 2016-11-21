@@ -77,32 +77,32 @@ func TestParseTag(t *testing.T) {
 	tests := []struct {
 		name   string
 		tag    string
-		expect tag
+		expect Tag
 	}{
 		{
 			name:   "name only",
 			tag:    "first_name",
-			expect: tag{name: "first_name"},
+			expect: Tag{name: "first_name"},
 		},
 		{
 			name:   "name, omitempty",
 			tag:    "first_name,omitempty",
-			expect: tag{name: "first_name", omit: true},
+			expect: Tag{name: "first_name", omit: true},
 		},
 		{
 			name:   "ignore",
 			tag:    "-",
-			expect: tag{ignore: true},
+			expect: Tag{ignore: true},
 		},
 		{
 			name:   "christmas tree",
 			tag:    "name,prefix=pre_,suffix=suf_,omitempty",
-			expect: tag{name: "name", prefix: "pre_", suffix: "suf_", omit: true},
+			expect: Tag{name: "name", prefix: "pre_", suffix: "suf_", omit: true},
 		},
 		{
 			name:   "group",
 			tag:    "+,prefix=pre_,suffix=suf_,omitempty",
-			expect: tag{group: true, prefix: "pre_", suffix: "suf_", omit: true},
+			expect: Tag{group: true, prefix: "pre_", suffix: "suf_", omit: true},
 		},
 	}
 
@@ -127,6 +127,14 @@ func TestParseTag(t *testing.T) {
 		if got.omit != expect.omit {
 			t.Errorf("%s expected %t got %t", tt.name, expect.omit, got.omit)
 		}
+	}
+}
+
+func TestTags(t *testing.T) {
+	var fa FixtureAddress
+	tags := Tags(fa)
+	if len(tags) != 4 {
+		t.Fatalf("Expected4, got %d", len(tags))
 	}
 }
 

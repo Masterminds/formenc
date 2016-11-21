@@ -85,6 +85,26 @@ func Unmarshal(v url.Values, o interface{}) error {
 	return walk(val, v)
 }
 
+// Tags returns the tags on all of the fields on the struct that have 'form' annotations.
+func Tags(o interface{}) []*Tag {
+	tt := reflect.Indirect(reflect.ValueOf(o)).Type()
+	if tt.Kind() != reflect.Struct {
+		return []*Tag{}
+	}
+	tags := []*Tag{}
+
+	// Look for a Field on struct that matches the key name.
+	for i := 0; i < tt.NumField(); i++ {
+		f := tt.Field(i)
+		tag := parseTag(f.Tag.Get("form"))
+		if !tag.ignore && tag.name == "" {
+			tag.name = f.Name
+		}
+		tags = append(tags, tag)
+	}
+	return tags
+}
+
 func walk(val reflect.Value, v url.Values) error {
 	// Loop through values, top-down specificity
 	verrs := []*ValidationError{}
@@ -263,12 +283,12 @@ func assignToFloat(rv reflect.Value, val string) error {
 	return nil
 }
 
-func parseTag(str string) *tag {
+func parseTag(str string) *Tag {
 	parts := strings.Split(str, ",")
 	if len(parts) == 1 && parts[0] == "" {
-		return &tag{}
+		return &Tag{}
 	}
-	t := &tag{}
+	t := &Tag{}
 	switch n := parts[0]; n {
 	case "+":
 		t.group = true
@@ -296,7 +316,7 @@ func parseTag(str string) *tag {
 //	Name string `form:name`
 //	Date time.Time `form:date,omitempty`
 //	Address *Address `form:+,omitempty,prefix=addr_
-type tag struct {
+type Tag struct {
 	name           string
 	prefix, suffix string //prefix=, suffix=
 	omit           bool   // omitempty
