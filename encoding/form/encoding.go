@@ -14,6 +14,11 @@ type ValidationError struct {
 	Field, Message string
 }
 
+// Invalid constructs a ValidationError.
+func Invalid(field, msg string) *ValidationError {
+	return &ValidationError{Field: field, Message: msg}
+}
+
 func (e ValidationError) Error() string {
 	return e.Message
 }
