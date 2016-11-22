@@ -20,9 +20,9 @@ type ExampleForm struct {
 	// Retrieve these files from the form.
 	FirstName string `form:"first_name"`
 	LastName  string `form:"last_name"`
-	// Retrieve these fields, but omit empty address
+	// Retrieve these fields, but Omit empty address
 	HomeAddress *ExampleAddress `form:"+,omitempty"`
-	// This uses prefix to modify the field name on the address. So 'street'
+	// This uses Prefix to modify the field name on the address. So 'street'
 	// becomes 'mail_street'.
 	MailingAddress *ExampleAddress `form:"+,omitempty,prefix=mail_"`
 	// Ignore this field
@@ -82,50 +82,50 @@ func TestParseTag(t *testing.T) {
 		{
 			name:   "name only",
 			tag:    "first_name",
-			expect: Tag{name: "first_name"},
+			expect: Tag{Name: "first_name"},
 		},
 		{
 			name:   "name, omitempty",
 			tag:    "first_name,omitempty",
-			expect: Tag{name: "first_name", omit: true},
+			expect: Tag{Name: "first_name", Omit: true},
 		},
 		{
 			name:   "ignore",
 			tag:    "-",
-			expect: Tag{ignore: true},
+			expect: Tag{Ignore: true},
 		},
 		{
 			name:   "christmas tree",
 			tag:    "name,prefix=pre_,suffix=suf_,omitempty",
-			expect: Tag{name: "name", prefix: "pre_", suffix: "suf_", omit: true},
+			expect: Tag{Name: "name", Prefix: "pre_", Suffix: "suf_", Omit: true},
 		},
 		{
 			name:   "group",
 			tag:    "+,prefix=pre_,suffix=suf_,omitempty",
-			expect: Tag{group: true, prefix: "pre_", suffix: "suf_", omit: true},
+			expect: Tag{Group: true, Prefix: "pre_", Suffix: "suf_", Omit: true},
 		},
 	}
 
 	for _, tt := range tests {
 		got := parseTag(tt.tag)
 		expect := tt.expect
-		if got.name != expect.name {
-			t.Errorf("%s expected %q, got %q", tt.name, expect.name, got.name)
+		if got.Name != expect.Name {
+			t.Errorf("%s expected %q, got %q", tt.name, expect.Name, got.Name)
 		}
-		if got.prefix != expect.prefix {
-			t.Errorf("%s expected %q, got %q", tt.name, expect.prefix, got.prefix)
+		if got.Prefix != expect.Prefix {
+			t.Errorf("%s expected %q, got %q", tt.name, expect.Prefix, got.Prefix)
 		}
-		if got.suffix != expect.suffix {
-			t.Errorf("%s expected %q, got %q", tt.name, expect.suffix, got.suffix)
+		if got.Suffix != expect.Suffix {
+			t.Errorf("%s expected %q, got %q", tt.name, expect.Suffix, got.Suffix)
 		}
-		if got.group != expect.group {
-			t.Errorf("%s expected %t got %t", tt.name, expect.group, got.group)
+		if got.Group != expect.Group {
+			t.Errorf("%s expected %t got %t", tt.name, expect.Group, got.Group)
 		}
-		if got.ignore != expect.ignore {
-			t.Errorf("%s expected %t got %t", tt.name, expect.ignore, got.ignore)
+		if got.Ignore != expect.Ignore {
+			t.Errorf("%s expected %t got %t", tt.name, expect.Ignore, got.Ignore)
 		}
-		if got.omit != expect.omit {
-			t.Errorf("%s expected %t got %t", tt.name, expect.omit, got.omit)
+		if got.Omit != expect.Omit {
+			t.Errorf("%s expected %t got %t", tt.name, expect.Omit, got.Omit)
 		}
 	}
 }

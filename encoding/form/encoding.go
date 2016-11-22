@@ -97,8 +97,8 @@ func Tags(o interface{}) []*Tag {
 	for i := 0; i < tt.NumField(); i++ {
 		f := tt.Field(i)
 		tag := parseTag(f.Tag.Get("form"))
-		if !tag.ignore && tag.name == "" {
-			tag.name = f.Name
+		if !tag.Ignore && tag.Name == "" {
+			tag.Name = f.Name
 		}
 		tags = append(tags, tag)
 	}
@@ -167,10 +167,10 @@ func assignToStruct(rval reflect.Value, key string, values []string) error {
 	for i := 0; i < rt.NumField(); i++ {
 		f := rt.Field(i)
 		tag := parseTag(f.Tag.Get("form"))
-		if !tag.ignore && tag.name == "" {
-			tag.name = f.Name
+		if !tag.Ignore && tag.Name == "" {
+			tag.Name = f.Name
 		}
-		if tag.name == key {
+		if tag.Name == key {
 			validator := "FormValidate" + f.Name
 			setter := "FormSet" + f.Name
 
@@ -291,21 +291,21 @@ func parseTag(str string) *Tag {
 	t := &Tag{}
 	switch n := parts[0]; n {
 	case "+":
-		t.group = true
+		t.Group = true
 	case "-":
-		t.ignore = true
+		t.Ignore = true
 	default:
-		t.name = n
+		t.Name = n
 	}
 
 	for _, p := range parts[1:] {
 		switch {
 		case p == "omitempty":
-			t.omit = true
+			t.Omit = true
 		case strings.HasPrefix(p, "prefix="):
-			t.prefix = strings.TrimPrefix(p, "prefix=")
+			t.Prefix = strings.TrimPrefix(p, "prefix=")
 		case strings.HasPrefix(p, "suffix="):
-			t.suffix = strings.TrimPrefix(p, "suffix=")
+			t.Suffix = strings.TrimPrefix(p, "suffix=")
 		}
 	}
 	return t
@@ -317,11 +317,11 @@ func parseTag(str string) *Tag {
 //	Date time.Time `form:date,omitempty`
 //	Address *Address `form:+,omitempty,prefix=addr_
 type Tag struct {
-	name           string
-	prefix, suffix string //prefix=, suffix=
-	omit           bool   // omitempty
-	ignore         bool   // -
-	group          bool   // +
+	Name           string
+	Prefix, Suffix string //prefix=, suffix=
+	Omit           bool   // omitempty
+	Ignore         bool   // -
+	Group          bool   // +
 	validator      Validator
 	unmarshaler    FieldUnmarshaler
 }
