@@ -188,6 +188,9 @@ func assignToStruct(rval reflect.Value, key string, values []string) error {
 					log.Printf("Validating %s against %v\n", key, m)
 				}
 				if err := callFormMethod(m, rval, values); err != nil {
+					if LogDebug {
+						log.Printf("Validation of %s=%v failed: %s", key, values, err)
+					}
 					return err
 				}
 			}
