@@ -227,6 +227,14 @@ func callFormMethod(method reflect.Method, target reflect.Value, values []string
 	return nil
 }
 
+// empty returns true if v's len is 0, or v's len is 1 and v[0]'s len is 0
+func empty(v []string) bool {
+	if len(v) == 0 {
+		return true
+	}
+	return len(v) == 1 && len(v[0]) == 0
+}
+
 func assignToStructField(rv reflect.Value, val []string) error {
 	// Basically, we need to convert from a string to the appropriate underlying
 	// kind, then assign.
@@ -236,19 +244,19 @@ func assignToStructField(rv reflect.Value, val []string) error {
 		return nil
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		vv := "0"
-		if len(val) > 0 {
+		if !empty(val) {
 			vv = val[0]
 		}
 		return assignToInt(rv, vv)
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		vv := "0"
-		if len(val) > 0 {
+		if !empty(val) {
 			vv = val[0]
 		}
 		return assignToUint(rv, vv)
 	case reflect.Float32, reflect.Float64:
 		vv := "0"
-		if len(val) > 0 {
+		if !empty(val) {
 			vv = val[0]
 		}
 		return assignToFloat(rv, vv)
