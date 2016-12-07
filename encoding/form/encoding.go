@@ -201,9 +201,12 @@ func assignToStruct(rval reflect.Value, key string, values []string) error {
 				return callFormMethod(m, rval, values)
 			} else {
 				if LogDebug {
-					log.Printf("Assigning %s to %v", key, values)
+					log.Printf("Assigning %s value %v", key, values)
 				}
-				assignToStructField(rv.FieldByName(f.Name), values)
+				err := assignToStructField(rv.FieldByName(f.Name), values)
+				if LogDebug && err != nil {
+					log.Printf("Error assigning %s value %v: %s", key, values, err)
+				}
 				return nil
 			}
 		}
