@@ -15,8 +15,8 @@ type ValidationError struct {
 }
 
 // Invalid constructs a ValidationError.
-func Invalid(field, msg string) *ValidationError {
-	return &ValidationError{Field: field, Message: msg}
+func Invalid(field, msg string, v ...interface{}) *ValidationError {
+	return &ValidationError{Field: field, Message: fmt.Sprintf(msg, v...)}
 }
 
 func (e ValidationError) Error() string {
@@ -39,11 +39,11 @@ func (c CompoundValidationError) Errors() []*ValidationError {
 }
 
 func (c CompoundValidationError) Error() string {
-	msg := make([]string, len(c.errs))
+	msg := []string{}
 	for _, e := range c.errs {
 		msg = append(msg, e.Error())
 	}
-	return fmt.Sprintf("multiple validation errors occurred: %s", strings.Join(msg, "; "))
+	return fmt.Sprintf("validation errors occurred: %s", strings.Join(msg, "; "))
 }
 
 // Validator indicates whether a form field is valid.
