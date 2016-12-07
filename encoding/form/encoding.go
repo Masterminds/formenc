@@ -3,11 +3,14 @@ package form
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
 )
+
+var LogDebug = false
 
 // ValidationError indicates that a field was not valid.
 type ValidationError struct {
@@ -181,7 +184,9 @@ func assignToStruct(rval reflect.Value, key string, values []string) error {
 
 			// If there is a validator, call it.
 			if m, ok := ptrt.MethodByName(validator); ok {
-				// fmt.Printf("Validating %s against %v\n", key, m)
+				if LogDebug {
+					log.Printf("Validating %s against %v\n", key, m)
+				}
 				if err := callFormMethod(m, rval, values); err != nil {
 					return err
 				}
@@ -190,9 +195,14 @@ func assignToStruct(rval reflect.Value, key string, values []string) error {
 			// For assignment, if there is a setter, use it. Otherwise, do a
 			// raw assignment.
 			if m, ok := ptrt.MethodByName(setter); ok {
-				//fmt.Printf("Setting %s with %v\n", key, m)
+				if LogDebug {
+					log.Printf("Setting %s with %v\n", key, m)
+				}
 				return callFormMethod(m, rval, values)
 			} else {
+				if LogDebug {
+					log.Printf("Assigning %s to %v", key, values)
+				}
 				assignToStructField(rv.FieldByName(f.Name), values)
 				return nil
 			}
