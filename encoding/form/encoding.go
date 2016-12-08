@@ -23,7 +23,7 @@ func Invalid(field, msg string, v ...interface{}) *ValidationError {
 }
 
 func (e ValidationError) Error() string {
-	return e.Message
+	return fmt.Sprintf("%s: %s", e.Field, e.Message)
 }
 
 // CompoundValidationError represents a list of validation errors.
